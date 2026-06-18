@@ -1,11 +1,30 @@
 import axios from 'axios';
 
-// In dev, Vite proxies /api to the backend, so a relative baseURL works.
-// In production, set VITE_API_URL to the API origin.
-const baseURL = import.meta.env.VITE_API_URL || '';
+// Normalise the configured API base URL so we always end up with exactly one
+// `/api` segment in the final request URL.
+//
+// All endpoint paths in this file are written WITH the `/api` prefix
+// (e.g. `/api/auth/register`). Therefore the baseURL must NOT itself end in
+// `/api`. We defensively strip a trailing `/api` (and any trailing slash) from
+// VITE_API_URL, so it works whether the env var is set to:
+//   https://host.com        → https://host.com   → /api/auth/register ✓
+//   https://host.com/api    → https://host.com   → /api/auth/register ✓
+//   https://host.com/api/   → https://host.com   → /api/auth/register ✓
+//   (empty, dev)            → ''                 → /api/... (Vite proxy) ✓
+function normalizeBaseUrl(raw) {
+  let base = (raw || '').trim();
+  if (!base) return '';
+  base = base.replace(/\/+$/, ''); // drop trailing slashes
+  base = base.replace(/\/api$/i, ''); // drop a trailing /api (paths add it)
+  return base;
+}
+
+const baseURL = normalizeBaseUrl(import.meta.env.VITE_API_URL);
 
 export const api = axios.create({
   baseURL,
+  // Network errors should fail fast rather than hang indefinitely.
+  timeout: 20000,
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -30,13 +49,34 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Normalise error messages.
+// Normalise errors into user-friendly messages and never throw raw/blank errors.
 api.interceptors.response.use(
   (res) => res,
   (error) => {
-    const message =
-      error.response?.data?.error || error.message || 'Something went wrong';
-    return Promise.reject(new Error(message));
+    let message;
+    if (error.response) {
+      // Server responded with an error status.
+      const status = error.response.status;
+      const serverMsg = error.response.data?.error || error.response.data?.message;
+      if (serverMsg) {
+        message = serverMsg;
+      } else if (status === 404) {
+        message = 'That resource was not found (404).';
+      } else if (status >= 500) {
+        message = 'The server had a problem (500). Please try again shortly.';
+      } else {
+        message = `Request failed (${status}). Please try again.`;
+      }
+    } else if (error.code === 'ECONNABORTED') {
+      message = 'The server took too long to respond. Please try again.';
+    } else {
+      // No response at all — network/CORS/DNS/offline.
+      message = 'Could not connect to server. Please try again.';
+    }
+    const normalized = new Error(message);
+    normalized.status = error.response?.status;
+    normalized.isNetworkError = !error.response;
+    return Promise.reject(normalized);
   }
 );
 

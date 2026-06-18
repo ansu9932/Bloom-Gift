@@ -1,5 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './lib/AuthContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 
@@ -35,19 +36,21 @@ export default function App() {
   return (
     <AuthProvider>
       <Shell>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/compose" element={<Compose />} />
-          <Route path="/compose/bouquet" element={<BouquetBuilder />} />
-          <Route path="/compose/finish" element={<Finish />} />
-          <Route path="/gift" element={<Gift />} />
-          <Route path="/preview" element={<Preview />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/flowers" element={<Flowers />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/compose" element={<Compose />} />
+            <Route path="/compose/bouquet" element={<BouquetBuilder />} />
+            <Route path="/compose/finish" element={<Finish />} />
+            <Route path="/gift" element={<Gift />} />
+            <Route path="/preview" element={<Preview />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/flowers" element={<Flowers />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ErrorBoundary>
       </Shell>
     </AuthProvider>
   );

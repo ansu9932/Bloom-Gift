@@ -1,0 +1,28 @@
+# SPA deep-link fallback for Apache (Hostinger shared hosting).
+# Ensures direct visits to client-side routes like /gift, /preview,
+# /compose/finish, /login, etc. serve index.html so React Router can handle them.
+# Without this, opening a shared gift link directly returns a 404.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Don't rewrite requests for the API (if proxied on the same host).
+  RewriteCond %{REQUEST_URI} ^/api/ [NC]
+  RewriteRule ^ - [L]
+
+  # Serve existing files and directories as-is (assets, images, etc.).
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else falls back to the SPA entry point.
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Long-cache hashed static assets.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2?|png|jpg|jpeg|gif|svg|webp)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>

@@ -24,18 +24,34 @@ app.use(
   })
 );
 
-// CORS — allow configured client origins.
-const origins = (process.env.CLIENT_ORIGIN || 'http://localhost:5173')
-  .split(',')
-  .map((o) => o.trim());
+// CORS — allow configured client origins. Defaults include the deployed
+// Hostinger site and local dev so the API works out of the box. Add/override
+// via the CLIENT_ORIGIN env var (comma-separated). Trailing slashes are ignored.
+const DEFAULT_ORIGINS = [
+  'https://limegreen-eland-563542.hostingersite.com',
+  'http://localhost:5173',
+  'http://localhost:4173',
+];
+
+const stripSlash = (s) => String(s || '').trim().replace(/\/+$/, '');
+
+const allowedOrigins = new Set(
+  [...DEFAULT_ORIGINS, ...(process.env.CLIENT_ORIGIN || '').split(',')]
+    .map(stripSlash)
+    .filter(Boolean)
+);
+const allowAll = allowedOrigins.has('*');
+
 app.use(
   cors({
     origin(origin, cb) {
-      if (!origin || origins.includes(origin) || origins.includes('*')) {
+      // Allow non-browser clients (curl, health checks) with no Origin header.
+      if (!origin || allowAll || allowedOrigins.has(stripSlash(origin))) {
         return cb(null, true);
       }
-      return cb(new Error('Not allowed by CORS'));
+      return cb(new Error(`Origin ${origin} not allowed by CORS`));
     },
+    credentials: true,
   })
 );
 

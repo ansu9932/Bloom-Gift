@@ -1,7 +1,21 @@
 import { useLocation } from 'react-router-dom';
 import { useMemo } from 'react';
 import GiftPreview from '../components/preview/GiftPreview';
+import ErrorBoundary from '../components/ErrorBoundary';
 import { decodeSequence } from '../utils/encode';
+
+// Full-screen, on-brand fallback used if anything inside the gift crashes.
+function GiftError({ message }) {
+  return (
+    <div className="fullscreen grid place-items-center bg-bloom-green text-bloom-cream">
+      <div className="px-6 text-center">
+        <p className="font-display text-2xl">This gift couldn't be opened</p>
+        <p className="mt-2 text-sm text-bloom-cream/70">{message}</p>
+        <a href="/compose" className="btn-gold mt-4 inline-block">Compose a gift →</a>
+      </div>
+    </div>
+  );
+}
 
 // Preview mode: reads the entire gift from the URL (?seq=base64). No DB needed.
 export default function Preview() {
@@ -23,5 +37,9 @@ export default function Preview() {
     );
   }
 
-  return <GiftPreview sequence={sequence} />;
+  return (
+    <ErrorBoundary fallback={({ message }) => <GiftError message={message} />}>
+      <GiftPreview sequence={sequence} />
+    </ErrorBoundary>
+  );
 }

@@ -24,10 +24,17 @@ export default function Finish() {
   }, []);
 
   // The shareable URL: a permanent slug URL once saved, else a self-contained
-  // preview URL that embeds the whole gift.
+  // preview URL that embeds the whole gift. Guarded so an encoding hiccup can
+  // never blank the page.
   const previewUrl = useMemo(() => {
     if (!draft?.sequence) return '';
-    return buildPreviewUrl(draft.sequence);
+    try {
+      return buildPreviewUrl(draft.sequence);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to build preview URL:', e);
+      return '';
+    }
   }, [draft]);
 
   const shareUrl = useMemo(() => {
@@ -109,31 +116,40 @@ export default function Finish() {
       {/* Link + QR */}
       <div className="card-surface mt-5 p-5">
         <p className="text-xs font-semibold tracking-widest text-bloom-green/50">YOUR GIFT LINK</p>
-        <div className="mt-2 flex items-center gap-2">
-          <input readOnly value={shareUrl} className="input-field flex-1 truncate py-2 text-sm" />
-          <button onClick={copy} className="btn-gold py-2 text-sm">
-            {copied ? '✓ Copied' : 'Copy'}
-          </button>
-        </div>
 
-        <div className="mt-5 flex flex-col items-center gap-3">
-          <div className="rounded-2xl bg-white p-4 shadow">
-            <QRCodeSVG value={shareUrl} size={168} fgColor="#1a2e1a" />
-          </div>
-          <p className="text-xs text-bloom-green/50">Scan to open the gift</p>
-        </div>
+        {shareUrl ? (
+          <>
+            <div className="mt-2 flex items-center gap-2">
+              <input readOnly value={shareUrl} className="input-field flex-1 truncate py-2 text-sm" />
+              <button onClick={copy} className="btn-gold py-2 text-sm">
+                {copied ? '✓ Copied' : 'Copy'}
+              </button>
+            </div>
 
-        <div className="mt-5 grid grid-cols-3 gap-2">
-          <a href={`https://wa.me/?text=${waText}`} target="_blank" rel="noreferrer" className="btn-ghost py-2 text-sm">
-            WhatsApp
-          </a>
-          <a href={`mailto:?subject=${encodeURIComponent('A gift for you')}&body=${mailBody}`} className="btn-ghost py-2 text-sm">
-            Email
-          </a>
-          <a href={previewUrl} target="_blank" rel="noreferrer" className="btn-ghost py-2 text-sm">
-            ▶ Open
-          </a>
-        </div>
+            <div className="mt-5 flex flex-col items-center gap-3">
+              <div className="rounded-2xl bg-white p-4 shadow">
+                <QRCodeSVG value={shareUrl} size={168} fgColor="#1a2e1a" />
+              </div>
+              <p className="text-xs text-bloom-green/50">Scan to open the gift</p>
+            </div>
+
+            <div className="mt-5 grid grid-cols-3 gap-2">
+              <a href={`https://wa.me/?text=${waText}`} target="_blank" rel="noreferrer" className="btn-ghost py-2 text-sm">
+                WhatsApp
+              </a>
+              <a href={`mailto:?subject=${encodeURIComponent('A gift for you')}&body=${mailBody}`} className="btn-ghost py-2 text-sm">
+                Email
+              </a>
+              <a href={previewUrl || shareUrl} target="_blank" rel="noreferrer" className="btn-ghost py-2 text-sm">
+                ▶ Open
+              </a>
+            </div>
+          </>
+        ) : (
+          <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-700">
+            We couldn't build a share link for this gift. Try going back and re-composing it.
+          </p>
+        )}
       </div>
 
       <div className="mt-6 flex justify-between">
