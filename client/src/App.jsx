@@ -9,7 +9,6 @@ import BouquetBuilder from './pages/BouquetBuilder';
 import Finish from './pages/Finish';
 import Gift from './pages/Gift';
 import Preview from './pages/Preview';
-import Pricing from './pages/Pricing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -43,7 +42,6 @@ export default function App() {
           <Route path="/compose/finish" element={<Finish />} />
           <Route path="/gift" element={<Gift />} />
           <Route path="/preview" element={<Preview />} />
-          <Route path="/pricing" element={<Pricing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />

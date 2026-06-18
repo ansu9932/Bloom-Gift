@@ -5,7 +5,6 @@ import { useAuth } from '../../lib/AuthContext';
 const links = [
   { to: '/', label: 'Home' },
   { to: '/flowers', label: 'Flowers' },
-  { to: '/pricing', label: 'Pricing' },
 ];
 
 function Logo() {

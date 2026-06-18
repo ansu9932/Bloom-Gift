@@ -44,12 +44,8 @@ export default function FlowerPanel({ onAdd, count, maxBlooms }) {
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between px-1 pb-2">
         <h3 className="font-display text-lg text-bloom-green">Flowers</h3>
-        <span
-          className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-            full ? 'bg-red-100 text-red-600' : 'bg-bloom-green/10 text-bloom-green'
-          }`}
-        >
-          {count}/{maxBlooms}
+        <span className="rounded-full bg-bloom-green/10 px-2 py-0.5 text-xs font-semibold text-bloom-green">
+          {count} placed
         </span>
       </div>
 

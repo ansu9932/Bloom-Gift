@@ -46,15 +46,7 @@ export default function Dashboard() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl text-bloom-green">Hi, {user?.username} 🌿</h1>
-          <p className="text-sm text-bloom-green/60">
-            Plan: <span className="font-medium capitalize">{user?.plan}</span>
-            {user?.plan === 'free' && (
-              <>
-                {' '}·{' '}
-                <Link to="/pricing" className="font-semibold text-bloom-gold">Upgrade</Link>
-              </>
-            )}
-          </p>
+          <p className="text-sm text-bloom-green/60">Your gifts and bouquets, all in one place.</p>
         </div>
         <Link to="/compose" className="btn-primary py-2 text-sm">Compose a gift →</Link>
       </div>

@@ -49,21 +49,13 @@ export function AuthProvider({ children }) {
     setUser(null);
   }, []);
 
-  const upgrade = useCallback(async (plan) => {
-    const { user: me } = await AuthAPI.upgrade(plan);
-    setUser(me);
-    return me;
-  }, []);
-
   const value = {
     user,
     loading,
     isAuthed: !!user,
-    plan: user?.plan || 'free',
     login,
     register,
     logout,
-    upgrade,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

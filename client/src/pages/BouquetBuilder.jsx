@@ -9,7 +9,7 @@ const STORAGE_KEY = 'bloomgift_bouquet';
 
 export default function BouquetBuilder() {
   const navigate = useNavigate();
-  const { isAuthed, plan } = useAuth();
+  const { isAuthed } = useAuth();
   const bouquet = useBouquet();
   const [palette, setPalette] = useState('pink');
   const [saving, setSaving] = useState(false);
@@ -68,8 +68,7 @@ export default function BouquetBuilder() {
           Compose <span className="italic">a bouquet</span>
         </h1>
         <p className="mt-1 text-sm text-bloom-green/60">
-          Pick your blooms · {plan === 'blooming' ? '12' : '1'} bloom
-          {plan === 'blooming' ? 's' : ''} on your {plan} plan
+          Pick your blooms — arrange as many as you like, completely free.
         </p>
       </div>
 

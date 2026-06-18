@@ -30,11 +30,6 @@ const User = {
     );
     return rows[0] || null;
   },
-
-  async setPlan(id, plan) {
-    await pool.query('UPDATE users SET plan = ? WHERE id = ?', [plan, id]);
-    return this.findById(id);
-  },
 };
 
 module.exports = User;

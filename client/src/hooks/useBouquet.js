@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 
-const MAX_BLOOMS = 12;
+// No cap — every feature is free and unlimited.
+const MAX_BLOOMS = Infinity;
 
 function placedId() {
   return `pf-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
@@ -34,9 +35,9 @@ export function useBouquet(initial = []) {
       added = {
         uid: placedId(),
         id: flower.id,
-        // Spread new flowers near the center with slight jitter.
-        x: 48 + (Math.random() * 12 - 6),
-        y: 46 + (Math.random() * 12 - 6),
+        // Spread new flowers around the wrap opening (upper-centre) with jitter.
+        x: 50 + (Math.random() * 16 - 8),
+        y: 38 + (Math.random() * 14 - 7),
         scale: 1,
         rotation: Math.random() * 30 - 15,
         zIndex: prev.length + 1,

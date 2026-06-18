@@ -5,12 +5,6 @@ const { requireAuth, optionalAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Plan limits enforced server-side.
-const PLAN_LIMITS = {
-  free: { maxSteps: 2 },
-  blooming: { maxSteps: 30 },
-};
-
 function slugify(text) {
   return String(text || '')
     .toLowerCase()
@@ -40,16 +34,6 @@ router.post('/', optionalAuth, async (req, res) => {
 
     if (!Array.isArray(sequenceData) || sequenceData.length === 0) {
       return res.status(400).json({ error: 'sequenceData must be a non-empty array' });
-    }
-
-    // Enforce step limits based on the user's plan (free if unauthenticated).
-    const plan = req.user?.plan || 'free';
-    const limit = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
-    const stepCount = sequenceData.filter((s) => s.kind !== 'lock').length;
-    if (stepCount > limit.maxSteps) {
-      return res.status(403).json({
-        error: `Your ${plan} plan allows up to ${limit.maxSteps} steps. Upgrade to Blooming for up to 30.`,
-      });
     }
 
     const id = uuidv4();

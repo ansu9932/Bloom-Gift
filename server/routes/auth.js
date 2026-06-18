@@ -88,16 +88,4 @@ router.get('/me', requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/auth/upgrade — simulate plan upgrade (no real payment gateway wired)
-router.post('/upgrade', requireAuth, async (req, res) => {
-  try {
-    const plan = req.body?.plan === 'blooming' ? 'blooming' : 'free';
-    const user = await User.setPlan(req.user.id, plan);
-    return res.json({ user });
-  } catch (err) {
-    console.error('upgrade error', err);
-    return res.status(500).json({ error: 'Failed to update plan' });
-  }
-});
-
 module.exports = router;

@@ -100,15 +100,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pricing teaser */}
+      {/* Closing call to action */}
       <section className="mx-auto max-w-4xl px-4 py-20 text-center">
-        <h2 className="font-display text-3xl text-bloom-green">Start free, bloom when ready</h2>
+        <h2 className="font-display text-3xl text-bloom-green">Everything, for everyone — free</h2>
         <p className="mt-2 text-bloom-green/60">
-          Free gives you the essentials. Blooming unlocks 30 steps, 12 blooms, scratch reveal, voice notes & more.
+          Unlimited blooms, every surface, scratch reveal, voice notes, music & more. No plans, no paywalls.
         </p>
         <div className="mt-6 flex justify-center gap-3">
-          <Link to="/pricing" className="btn-gold">See pricing</Link>
-          <Link to="/compose" className="btn-ghost">Compose now</Link>
+          <Link to="/compose" className="btn-primary">Compose a gift</Link>
+          <Link to="/flowers" className="btn-ghost">Browse flowers</Link>
         </div>
       </section>
     </div>

@@ -15,17 +15,22 @@ export default function BouquetDisplay({ step, onNext }) {
 
   return (
     <div className="fullscreen flex items-center justify-center overflow-hidden" style={{ background: pal.bg }} onClick={onNext}>
-      <div className="relative h-[70vh] w-[90%] max-w-md">
-        {/* Paper wrap cone behind the flowers */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
-          <WrappedBouquet palette={palette} style={bouquet.style} width={260} />
+      {/* faint blurred flower for depth */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 blur-sm">
+        <FlowerGlyph color="#ffffff" type="BLOOM" size={360} withStem={false} />
+      </div>
+
+      <div className="relative h-[78vh] w-[92%] max-w-md">
+        {/* Large centered kraft wrap behind the flowers */}
+        <div className="absolute bottom-2 left-1/2 aspect-[320/412] h-[66%] -translate-x-1/2 drop-shadow-2xl">
+          <WrappedBouquet style={bouquet.style} className="h-full w-full" />
         </div>
 
-        {/* Flowers bloom in one by one */}
+        {/* Flowers bloom in one by one from the wrap opening */}
         <div className="absolute inset-0">
           {flowers.length === 0 && (
-            <div className="absolute left-1/2 top-1/3 -translate-x-1/2 text-center" style={{ color: pal.text }}>
-              <FlowerGlyph color={pal.petal[0]} type="BLOOM" size={120} withStem={false} />
+            <div className="absolute left-1/2 top-[30%] -translate-x-1/2 text-center" style={{ color: pal.text }}>
+              <FlowerGlyph color={pal.petal[0]} type="BLOOM" size={140} withStem={false} />
               <p className="mt-2 font-display text-lg">A bouquet, just for you</p>
             </div>
           )}
@@ -50,7 +55,7 @@ export default function BouquetDisplay({ step, onNext }) {
                     color={data?.color}
                     type={data?.type}
                     flowerId={fl.id}
-                    size={90}
+                    size={96}
                   />
                 </div>
               </motion.div>
@@ -62,7 +67,7 @@ export default function BouquetDisplay({ step, onNext }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 + flowers.length * 0.18 }}
-          className="absolute -top-2 left-1/2 -translate-x-1/2 font-display text-2xl"
+          className="absolute top-0 left-1/2 -translate-x-1/2 font-display text-2xl"
           style={{ color: pal.text }}
         >
           For you, with love

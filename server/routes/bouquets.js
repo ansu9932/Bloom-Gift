@@ -4,22 +4,12 @@ const { requireAuth, optionalAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Bloom limits per plan.
-const PLAN_BLOOMS = { free: 1, blooming: 12 };
-
 // POST /api/bouquets — save a bouquet
 router.post('/', optionalAuth, async (req, res) => {
   try {
     const { name = 'Classic Bouquet', style = 'classic', flowers = [], thumbnailUrl = null } = req.body || {};
     if (!Array.isArray(flowers)) {
       return res.status(400).json({ error: 'flowers must be an array' });
-    }
-    const plan = req.user?.plan || 'free';
-    const maxBlooms = PLAN_BLOOMS[plan] ?? 1;
-    if (flowers.length > maxBlooms) {
-      return res.status(403).json({
-        error: `Your ${plan} plan allows up to ${maxBlooms} bloom(s). Upgrade to Blooming for 12.`,
-      });
     }
     const bouquet = await Bouquet.create({
       userId: req.user?.id || null,

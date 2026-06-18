@@ -80,7 +80,7 @@ export default function BouquetComposer({ bouquet, palette, onPaletteChange }) {
 
         <div className="mt-3 flex items-center justify-between">
           <span className="text-sm text-bloom-green/60">
-            Flowers {flowers.length} / {maxBlooms}
+            Flowers placed: {flowers.length}
           </span>
           <ColorPalette value={palette} onChange={onPaletteChange} size="sm" />
         </div>
