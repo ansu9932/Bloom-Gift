@@ -1,0 +1,2 @@
+# Drop flower PNG/SVG illustrations here (named to match data/flowers.js `image` paths).
+# The app renders procedural SVG flowers when an image asset is missing, so it works out of the box.
